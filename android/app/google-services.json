@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "626548302798",
+    "project_id": "user-mgmt-b9ba2",
+    "storage_bucket": "user-mgmt-b9ba2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626548302798:android:6e3e28291730a069e1419f",
+        "android_client_info": {
+          "package_name": "com.mosshead.usermgmt.user_anagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "626548302798-s296eh14e4tl8u8fb5ve1lh2vchmc6ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9IEWID6uLaouaWeZDEqudxh9s-5uNNQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "626548302798-s296eh14e4tl8u8fb5ve1lh2vchmc6ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

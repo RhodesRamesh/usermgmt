@@ -1,5 +1,3 @@
-
-
 class User {
 
   String orgType;
@@ -7,8 +5,10 @@ class User {
   String emailId;
   String password;
   String description;
+  String imageUrl;
+  String documentId;
 
-  User(this.orgType, this.name, this.emailId, this.password, this.description);
+  User(this.orgType, this.name, this.emailId, this.password, this.description,this.imageUrl,this.documentId);
 
   Map<String, dynamic> toMap() {
     return {
@@ -17,6 +17,8 @@ class User {
       'emailId': emailId,
       'password': password,
       'description': description,
+      'imageUrl': imageUrl,
+      'documentId': documentId,
     };
   }
 
@@ -27,6 +29,8 @@ class User {
        map['emailId'] as String,
        map['password'] as String,
        map['description'] as String,
+       map['imageUrl'] as String,
+       map['documentId'] as String,
     );
   }
 }

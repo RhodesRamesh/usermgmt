@@ -163,7 +163,8 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
       if (value.docs.isNotEmpty) {
         user = User.fromMap(value.docs[0].data());
         if (user.password == strPassword) {
-          Get.toNamed(GetPageRouter.userListRoute);
+          user.documentId = value.docs[0].id;
+          Get.toNamed(GetPageRouter.userListRoute,arguments: user);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Password wrong"),

@@ -23,7 +23,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
   late String strPassword;
   late String strName;
   late String strEmail;
-  late String strPhone;
+  late String strDesc;
   String strOrgName="";
   List<OrgType> orgTypes = [];
 
@@ -63,7 +63,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
                       children: [
                         showNameTextField("Name"),
                         showEmailTextField("Email"),
-                        showPhoneTextField("Phone Number"),
+                        showPhoneTextField("Description"),
                         showPasswordTextField("Password"),
                         Text("Organization Type",style:  TextStyle(fontSize: 18,color: primaryColor),),
                         showOrgTypeDropdown(),
@@ -183,8 +183,8 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: TextFormField(
-        keyboardType: TextInputType.phone,
-        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(100)],
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
@@ -196,12 +196,12 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
         ),
         validator: (value) {
           if (value!.isEmpty) {
-            return "Enter Phone";
+            return "Enter Description";
           }
           return null;
         },
         onSaved: (value) {
-          strPhone = value ?? "";
+          strDesc = value ?? "";
         },
       ),
     );
@@ -236,7 +236,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
   }
 
   void callSaveMethod() async {
-    User user = User(strOrgName, strName, strEmail, strPassword, strPhone);
+    User user = User(strOrgName, strName, strEmail, strPassword, strDesc,"","");
     await FirebaseFirestore.instance
         .collection(FireStoreDots.userCollection)
         .add(user.toMap())

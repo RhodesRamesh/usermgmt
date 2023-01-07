@@ -7,6 +7,7 @@ import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
 import 'package:user_management/screens/fireStore/entity/User.dart';
 import 'package:user_management/screens/fireStore/entity/orgTypes.dart';
+import 'package:user_management/screens/fireStore/sendMail.dart';
 
 class UserList extends StatefulWidget {
   const UserList({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class UserList extends StatefulWidget {
   State<UserList> createState() => _UserListState();
 }
 
-class _UserListState extends State<UserList> {
+class _UserListState extends State<UserList>{
   var _future = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).get();
 
   @override

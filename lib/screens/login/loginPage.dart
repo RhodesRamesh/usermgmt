@@ -27,71 +27,73 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text(
-              "Login",
-              style: TextStyle(color: primaryColor, fontWeight: FontWeight.w800, fontSize: 32),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.75,
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      child: SvgPicture.asset("assets/logo/usermgmt.svg", fit: BoxFit.fitHeight),
-                    ),
-                    showEmailTextField("Email"),
-                    Obx(() => showPasswordTextField("Password")),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _formKey.currentState!.save();
-                                    callLoginAuth();
-                                  }
-                                },
-                                child: const Text(
-                                  "Login",
-                                  style: TextStyle(color: Colors.white, fontSize: 22),
-                                )),
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                "Login",
+                style: TextStyle(color: primaryColor, fontWeight: FontWeight.w800, fontSize: 32),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        child: SvgPicture.asset("assets/logo/usermgmt.svg", fit: BoxFit.fitHeight),
+                      ),
+                      showEmailTextField("Email"),
+                      Obx(() => showPasswordTextField("Password")),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      _formKey.currentState!.save();
+                                      callLoginAuth();
+                                    }
+                                  },
+                                  child: const Text(
+                                    "Login",
+                                    style: TextStyle(color: Colors.white, fontSize: 22),
+                                  )),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-                      child: InkWell(
-                          onTap: () => Get.dialog(showEmailDialog()),
-                          child: Text(
-                            "Forgot Password?",
-                            style: TextStyle(color: primaryColor, fontWeight: FontWeight.w400, fontSize: 16),
-                          )),
-                    )
-                  ],
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                        child: InkWell(
+                            onTap: () => Get.dialog(showEmailDialog()),
+                            child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(color: primaryColor, fontWeight: FontWeight.w400, fontSize: 16),
+                            )),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            InkWell(
-                onTap: () => Get.toNamed(GetPageRouter.userAddRoute),
-                child: Text(
-                  "New user? Click Here",
-                  style: TextStyle(color: primaryColor, fontWeight: FontWeight.w800, fontSize: 22),
-                ))
-          ],
+              InkWell(
+                  onTap: () => Get.toNamed(GetPageRouter.userAddRoute),
+                  child: Text(
+                    "New user? Click Here",
+                    style: TextStyle(color: primaryColor, fontWeight: FontWeight.w800, fontSize: 22),
+                  ))
+            ],
+          ),
         ),
       ),
     );

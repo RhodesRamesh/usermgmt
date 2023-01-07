@@ -7,8 +7,9 @@ class User {
   String description;
   String imageUrl;
   String documentId;
+  String userType;
 
-  User(this.orgType, this.name, this.emailId, this.password, this.description,this.imageUrl,this.documentId);
+  User(this.orgType, this.name, this.emailId, this.password, this.description,this.imageUrl,this.documentId,this.userType);
 
   Map<String, dynamic> toMap() {
     return {
@@ -19,6 +20,7 @@ class User {
       'description': description,
       'imageUrl': imageUrl,
       'documentId': documentId,
+      'userType': userType,
     };
   }
 
@@ -31,6 +33,7 @@ class User {
        map['description'] as String,
        map['imageUrl'] as String,
        map['documentId'] as String,
+       map['userType'] as String,
     );
   }
 }

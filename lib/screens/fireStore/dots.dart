@@ -1,4 +1,5 @@
 class FireStoreDots{
-  static const userCollection = "users";
-  static const orgTypesCollection = "orgTypes";
+  static const userCollection = "User";
+  static const orgTypesCollection = "OrgType";
+  static const adminCollection = "Admin";
 }

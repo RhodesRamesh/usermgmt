@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:user_management/resources/borderDesigns.dart';
 import 'package:user_management/resources/colors.dart';
 import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
 import 'package:user_management/screens/fireStore/entity/User.dart';
+import 'package:user_management/screens/fireStore/entity/Admin.dart';
 import 'package:user_management/screens/fireStore/entity/orgTypes.dart';
+import 'package:user_management/screens/fireStore/sendMail.dart';
 
 class UserAdd extends StatefulWidget {
   const UserAdd({Key? key}) : super(key: key);
@@ -24,7 +27,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
   late String strName;
   late String strEmail;
   late String strDesc;
-  String strOrgName="";
+  String strOrgName = "";
   List<OrgType> orgTypes = [];
 
   @override
@@ -65,7 +68,10 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
                         showEmailTextField("Email"),
                         showPhoneTextField("Description"),
                         showPasswordTextField("Password"),
-                        Text("Organization Type",style:  TextStyle(fontSize: 18,color: primaryColor),),
+                        Text(
+                          "Organization Type",
+                          style: TextStyle(fontSize: 18, color: primaryColor),
+                        ),
                         showOrgTypeDropdown(),
                       ],
                     ),
@@ -127,7 +133,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: TextFormField(
         keyboardType: TextInputType.name,
-        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        inputFormatters: [LengthLimitingTextInputFormatter(50)],
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           isDense: true,
@@ -236,31 +242,42 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
   }
 
   void callSaveMethod() async {
-    User user = User(strOrgName, strName, strEmail, strPassword, strDesc,"","");
-    await FirebaseFirestore.instance
-        .collection(FireStoreDots.userCollection)
-        .add(user.toMap())
-        .then((value) => {Get.offNamed(GetPageRouter.loginPageRoute)});
+    try{
+      User user = User(strOrgName, strName, strEmail, strPassword, strDesc, "", "", "User");
+      await FirebaseFirestore.instance.collection(FireStoreDots.userCollection).add(user.toMap());
+
+      SendMail sendmail = SendMail();
+      var data = await FirebaseFirestore.instance.collection(FireStoreDots.adminCollection).limit(1).get();
+      if (data.docs.isNotEmpty) {
+        Admin admin = Admin.fromMap(data.docs[0].data());
+        String adminMail = admin.mailId;
+        sendmail.sendAMailTo(adminMail,user.name,strOrgName);
+      }
+    }catch(e){
+      Logger().e(e);
+    }finally{
+      Get.offNamed(GetPageRouter.loginPageRoute);
+    }
   }
 
   Widget showOrgTypeDropdown() {
-    return DropdownButtonFormField(items: orgTypes.map((OrgType value) {
-      return DropdownMenuItem<String>(
-        value: value.orgName,
-        child: Text(value.orgName),
-      );
-    }).toList(),
+    return DropdownButtonFormField(
+      items: orgTypes.map((OrgType value) {
+        return DropdownMenuItem<String>(
+          value: value.orgName,
+          child: Text(value.orgName),
+        );
+      }).toList(),
       onChanged: (String? value) {
-        strOrgName = value??"";
+        strOrgName = value ?? "";
       },
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-
       ),
     );
   }
 
-  void getOrgType() async{
+  void getOrgType() async {
     var data = await FirebaseFirestore.instance.collection(FireStoreDots.orgTypesCollection).get();
     for (var element in data.docs) {
       OrgType orgType = OrgType.fromMap(element.data());

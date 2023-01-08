@@ -9,7 +9,10 @@ import 'package:user_management/resources/colors.dart';
 import 'package:user_management/resources/dimen.dart';
 import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
+import 'package:user_management/screens/fireStore/entity/Admin.dart';
+import 'package:user_management/screens/fireStore/entity/InviteTracker.dart';
 import 'package:user_management/screens/fireStore/entity/User.dart';
+import 'package:user_management/screens/fireStore/entity/userRoles.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,6 +26,7 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String strPassword;
   late String strEmail;
+  UserRoles strRole = UserRoles.User;
   RxBool showPwsd = true.obs;
 
   @override
@@ -53,6 +57,22 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
                       ),
                       showEmailTextField("Email"),
                       Obx(() => showPasswordTextField("Password")),
+                  DropdownButtonFormField(
+                    items: UserRoles.values.map((var value) {
+                      return DropdownMenuItem<UserRoles>(
+                        value: value,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
+                    onChanged: (UserRoles? value) {
+                      strRole = value ?? UserRoles.User;
+                    },
+                    isDense: true,
+                    value: UserRoles.User,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
                       Row(
                         children: [
                           Expanded(
@@ -62,7 +82,9 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
                                       _formKey.currentState!.save();
-                                      callLoginAuth();
+                                      Get.delete<UserRoles>();
+                                      Get.put<UserRoles>(strRole);
+                                      strRole == UserRoles.User? callUserLoginAuth():callAdminLoginAuth();
                                     }
                                   },
                                   child: const Text(
@@ -158,20 +180,69 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
     );
   }
 
-  void callLoginAuth() {
-    var data = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
-    User user;
+  void callAdminLoginAuth() {
+    var data = FirebaseFirestore.instance.collection(FireStoreDots.adminCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
+    Admin admin;
     data.then((value) {
       if (value.docs.isNotEmpty) {
-        user = User.fromMap(value.docs[0].data());
-        if (user.password == strPassword) {
-          user.documentId = value.docs[0].id;
-          Get.toNamed(GetPageRouter.userListRoute,arguments: user);
+        admin = Admin.fromMap(value.docs[0].data());
+        if (admin.password == strPassword) {
+          admin.documentId = value.docs[0].id;
+          Get.delete<UserRoles>();
+          Get.put<UserRoles>(UserRoles.Admin);
+          Get.toNamed(GetPageRouter.userListRoute,arguments: admin);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Password wrong"),
           ));
         }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Mail ID not found"),
+        ));
+      }
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+      ));
+    });
+  }
+
+
+  void callUserLoginAuth() {
+    var data = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
+    User user;
+    data.then((value)async {
+      if (value.docs.isNotEmpty) {
+        user = User.fromMap(value.docs[0].data());
+         var temp = await FirebaseFirestore.instance.collection(FireStoreDots.inviteTrackerCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
+         if(temp.docs.isNotEmpty){
+           InviteTracker tracker = InviteTracker.fromMap(temp.docs[0].data());
+           if(tracker.status==0){
+             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+               content: Text("Approval Pending"),
+             ));
+           }else if(tracker.status==2){
+             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+               content: Text("Approval Rejected"),
+             ));
+           }else{
+             if (user.password == strPassword) {
+               user.documentId = value.docs[0].id;
+               Get.delete<UserRoles>();
+               Get.put<UserRoles>(UserRoles.User);
+               Get.toNamed(GetPageRouter.userListRoute,arguments: user);
+             } else {
+               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                 content: Text("Password wrong"),
+               ));
+             }
+           }
+         }else{
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+             content: Text("Mail ID not found"),
+           ));
+         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Mail ID not found"),

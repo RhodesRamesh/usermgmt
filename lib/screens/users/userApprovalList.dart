@@ -9,14 +9,14 @@ import 'package:user_management/screens/fireStore/entity/User.dart';
 import 'package:user_management/screens/fireStore/entity/orgTypes.dart';
 import 'package:user_management/screens/fireStore/sendMail.dart';
 
-class UserList extends StatefulWidget {
-  const UserList({Key? key}) : super(key: key);
+class UserApprovalList extends StatefulWidget {
+  const UserApprovalList({Key? key}) : super(key: key);
 
   @override
-  State<UserList> createState() => _UserListState();
+  State<UserApprovalList> createState() => _UserApprovalListState();
 }
 
-class _UserListState extends State<UserList>{
+class _UserApprovalListState extends State<UserApprovalList>{
   var _future = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).get();
 
   @override
@@ -27,7 +27,7 @@ class _UserListState extends State<UserList>{
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Users List"),
-        actions: [
+        /*actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
@@ -40,7 +40,7 @@ class _UserListState extends State<UserList>{
                 },
                 child: const Icon(Icons.person,size: 26,)),
           )
-        ],
+        ],*/
       ),
       body: Column(
         children: [
@@ -74,11 +74,7 @@ class _UserListState extends State<UserList>{
 
   @override
   void initState() {
-    try{
-      user = Get.arguments;
-    }catch(e){
-      print(e);
-    }
+    user = Get.arguments;
     getOrgType();
     super.initState();
   }

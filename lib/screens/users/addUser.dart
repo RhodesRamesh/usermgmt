@@ -7,8 +7,9 @@ import 'package:user_management/resources/borderDesigns.dart';
 import 'package:user_management/resources/colors.dart';
 import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
-import 'package:user_management/screens/fireStore/entity/User.dart';
 import 'package:user_management/screens/fireStore/entity/Admin.dart';
+import 'package:user_management/screens/fireStore/entity/InviteTracker.dart';
+import 'package:user_management/screens/fireStore/entity/User.dart';
 import 'package:user_management/screens/fireStore/entity/orgTypes.dart';
 import 'package:user_management/screens/fireStore/sendMail.dart';
 
@@ -26,7 +27,16 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
   late String strPassword;
   late String strName;
   late String strEmail;
-  late String strDesc;
+  late String strPhone;
+  late String strBusinessName;
+  late String strIncorporationType;
+  late String strYear;
+  late String strKeyFunctionary;
+  late String strServicesOrProducts;
+  late String strLocation;
+  late String strWebsite;
+  late String strDescription;
+  late String strVision;
   String strOrgName = "";
   List<OrgType> orgTypes = [];
 
@@ -57,23 +67,34 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
               Expanded(
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.9,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        showNameTextField("Name"),
-                        showEmailTextField("Email"),
-                        showPhoneTextField("Description"),
-                        showPasswordTextField("Password"),
-                        Text(
-                          "Organization Type",
-                          style: TextStyle(fontSize: 18, color: primaryColor),
-                        ),
-                        showOrgTypeDropdown(),
-                      ],
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          showNameTextField("Name"),
+                          showEmailTextField("Email"),
+                          showPhoneTextField("Phone Number"),
+                          showPasswordTextField("Password"),
+                          Text(
+                            "Organization Type",
+                            style: TextStyle(fontSize: 18, color: primaryColor),
+                          ),
+                          showOrgTypeDropdown(),
+                          showBusinessNameTextField("Business Name"),
+                          showIncorporationTypeTextField("Incorporation Type"),
+                          showYearTextField("Year"),
+                          showKeyFunctionaryTextField("Key Functionary"),
+                          showServicesOrProductsTextField("Services or Products"),
+                          showLocationTextField("Location"),
+                          showWebsiteTextField("Website"),
+                          showDescriptionTextField("Description"),
+                          showVisionTextField("Vision"),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -133,7 +154,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: TextFormField(
         keyboardType: TextInputType.name,
-        inputFormatters: [LengthLimitingTextInputFormatter(50)],
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
         textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           isDense: true,
@@ -151,7 +172,7 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
           return null;
         },
         onSaved: (value) {
-          strName = value ?? "";
+          strBusinessName = value ?? "";
         },
       ),
     );
@@ -189,8 +210,8 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: TextFormField(
-        keyboardType: TextInputType.text,
-        inputFormatters: [LengthLimitingTextInputFormatter(100)],
+        keyboardType: TextInputType.phone,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
@@ -202,12 +223,12 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
         ),
         validator: (value) {
           if (value!.isEmpty) {
-            return "Enter Description";
+            return "Enter Phone";
           }
           return null;
         },
         onSaved: (value) {
-          strDesc = value ?? "";
+          strPhone = value ?? "";
         },
       ),
     );
@@ -241,21 +262,295 @@ class _UserAddState extends State<UserAdd> with BorderDesign {
     );
   }
 
+  Widget showBusinessNameTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Business Name";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strName = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showIncorporationTypeTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter IncorporationType";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strIncorporationType = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showYearTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.datetime,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Year";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strYear = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showKeyFunctionaryTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Key Functionary";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strKeyFunctionary = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showServicesOrProductsTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Services or Products";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strServicesOrProducts = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showLocationTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Location";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strLocation = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showWebsiteTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.url,
+        inputFormatters: [LengthLimitingTextInputFormatter(50)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter a website";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strWebsite = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showDescriptionTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.multiline,
+        inputFormatters: [LengthLimitingTextInputFormatter(100)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Description";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strDescription = value ?? "";
+        },
+      ),
+    );
+  }
+
+  Widget showVisionTextField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        inputFormatters: [LengthLimitingTextInputFormatter(100)],
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 10, right: 15),
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.black),
+          border: inputdecBorderStyle(borderRadius),
+          enabledBorder: inputdecEnableborderStyle(borderRadius),
+          focusedBorder: inputdecFocusedborderStyle(borderRadius),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Enter Vision";
+          }
+          return null;
+        },
+        onSaved: (value) {
+          strVision = value ?? "";
+        },
+      ),
+    );
+  }
+
   void callSaveMethod() async {
-    try{
-      User user = User(strOrgName, strName, strEmail, strPassword, strDesc, "", "", "User");
+    try {
+      var data =
+          await FirebaseFirestore.instance.collection(FireStoreDots.inviteTrackerCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
+      if (data.docs.isNotEmpty) {
+        await ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(
+              content: Text("Mail Id already Exist"),
+            ))
+            .closed;
+        return;
+      }
+      User user = User(strOrgName, strName, strEmail, strPassword, strPhone, strBusinessName, strIncorporationType, strYear, strKeyFunctionary,
+          strServicesOrProducts, strLocation, strWebsite, strDescription, strVision, "", "");
       await FirebaseFirestore.instance.collection(FireStoreDots.userCollection).add(user.toMap());
 
       SendMail sendmail = SendMail();
-      var data = await FirebaseFirestore.instance.collection(FireStoreDots.adminCollection).limit(1).get();
+      data = await FirebaseFirestore.instance.collection(FireStoreDots.adminCollection).limit(1).get();
       if (data.docs.isNotEmpty) {
         Admin admin = Admin.fromMap(data.docs[0].data());
-        String adminMail = admin.mailId;
-        sendmail.sendAMailTo(adminMail,user.name,strOrgName);
+        String adminMail = admin.emailId;
+        sendmail.sendAMailTo(adminMail, user.name, strOrgName);
+        InviteTracker tracker = InviteTracker(0, strEmail, 0);
+        await FirebaseFirestore.instance.collection(FireStoreDots.inviteTrackerCollection).add(tracker.toMap());
       }
-    }catch(e){
+    } catch (e) {
       Logger().e(e);
-    }finally{
+    } finally {
       Get.offNamed(GetPageRouter.loginPageRoute);
     }
   }

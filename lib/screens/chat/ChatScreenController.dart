@@ -3,7 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:sendbird_sdk/sendbird_sdk.dart';
 import 'package:user_management/screens/fireStore/entity/User.dart' as u;
 
-class ChatScreenController extends GetxController {
+class ChatScreenController extends GetxController with ChannelEventHandler{
   RxList<BaseMessage> messages = <BaseMessage>[].obs;
   final u.User selUser;
 
@@ -50,4 +50,16 @@ class ChatScreenController extends GetxController {
     messages.value = [msg,...messages];
   }
 
+  @override
+  void onMessageReceived(BaseChannel channel, BaseMessage message) {
+    if (channel.channelUrl != this.channel.channelUrl) return;
+    final index = messages.indexWhere((e) => e.messageId == message.messageId);
+    messages.value = [...messages];
+    if (index != -1 && messages.isNotEmpty) {
+      messages.removeAt(index);
+      messages[index] = message;
+    } else {
+      messages.insert(0, message);
+    }
+  }
 }

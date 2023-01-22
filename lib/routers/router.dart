@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:user_management/screens/chat/chatScreen.dart';
 import 'package:user_management/screens/forgotpswd/forgotPswdPage.dart';
 import 'package:user_management/screens/login/loginPage.dart';
 import 'package:user_management/screens/splashscreen/splashscreen.dart';
@@ -14,6 +15,7 @@ class GetPageRouter {
   static String loginPageRoute = "/loginPage";
   static String forgotPswdPageRoute = "/forgotPswdPage";
   static String userProfilePageRoute = "/userProfilePage";
+  static String chatPageRoute = "/chatPage";
   static String userInvitationListPageRoute = "/userInvitationPage";
   static final routes = [
     GetPage(name: splashScreenRoute, page: () => const SplashScreen()),
@@ -22,6 +24,7 @@ class GetPageRouter {
     GetPage(name: loginPageRoute, page: () => const LoginPage()),
     GetPage(name: forgotPswdPageRoute, page: () =>  const ForgotPswdPage()),
     GetPage(name: userProfilePageRoute, page: () =>  const UserProfile(),transition: Transition.rightToLeft),
+    GetPage(name: chatPageRoute, page: () =>  const ChatScreen(),transition: Transition.rightToLeft),
     GetPage(name: userInvitationListPageRoute, page: () =>  const UserApprovalList(),transition: Transition.rightToLeft),
   ];
 }

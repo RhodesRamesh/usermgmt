@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:sendbird_sdk/sendbird_sdk.dart';
+import 'package:user_management/main.dart';
 import 'package:user_management/resources/borderDesigns.dart';
 import 'package:user_management/resources/colors.dart';
 import 'package:user_management/resources/dimen.dart';
@@ -11,7 +13,7 @@ import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
 import 'package:user_management/screens/fireStore/entity/Admin.dart';
 import 'package:user_management/screens/fireStore/entity/InviteTracker.dart';
-import 'package:user_management/screens/fireStore/entity/User.dart';
+import 'package:user_management/screens/fireStore/entity/User.dart' as u;
 import 'package:user_management/screens/fireStore/entity/userRoles.dart';
 
 class LoginPage extends StatefulWidget {
@@ -57,22 +59,22 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
                       ),
                       showEmailTextField("Email"),
                       Obx(() => showPasswordTextField("Password")),
-                  DropdownButtonFormField(
-                    items: UserRoles.values.map((var value) {
-                      return DropdownMenuItem<UserRoles>(
-                        value: value,
-                        child: Text(value.name),
-                      );
-                    }).toList(),
-                    onChanged: (UserRoles? value) {
-                      strRole = value ?? UserRoles.User;
-                    },
-                    isDense: true,
-                    value: UserRoles.User,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
+                      DropdownButtonFormField(
+                        items: UserRoles.values.map((var value) {
+                          return DropdownMenuItem<UserRoles>(
+                            value: value,
+                            child: Text(value.name),
+                          );
+                        }).toList(),
+                        onChanged: (UserRoles? value) {
+                          strRole = value ?? UserRoles.User;
+                        },
+                        isDense: true,
+                        value: UserRoles.User,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
                       Row(
                         children: [
                           Expanded(
@@ -211,38 +213,41 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
 
   void callUserLoginAuth() {
     var data = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
-    User user;
+    u.User user;
     data.then((value)async {
       if (value.docs.isNotEmpty) {
-        user = User.fromMap(value.docs[0].data());
-         var temp = await FirebaseFirestore.instance.collection(FireStoreDots.inviteTrackerCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
-         if(temp.docs.isNotEmpty){
-           InviteTracker tracker = InviteTracker.fromMap(temp.docs[0].data());
-           if(tracker.status==0){
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-               content: Text("Approval Pending"),
-             ));
-           }else if(tracker.status==2){
-             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-               content: Text("Approval Rejected"),
-             ));
-           }else{
-             if (user.password == strPassword) {
-               user.documentId = value.docs[0].id;
-               Get.delete<UserRoles>();
-               Get.put<UserRoles>(UserRoles.User);
-               Get.toNamed(GetPageRouter.userListRoute,arguments: user);
-             } else {
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                 content: Text("Password wrong"),
-               ));
-             }
-           }
-         }else{
-           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-             content: Text("Mail ID not found"),
-           ));
-         }
+        user = u.User.fromMap(value.docs[0].data());
+        var temp = await FirebaseFirestore.instance.collection(FireStoreDots.inviteTrackerCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
+        if(temp.docs.isNotEmpty){
+          InviteTracker tracker = InviteTracker.fromMap(temp.docs[0].data());
+          if(tracker.status==0){
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Approval Pending"),
+            ));
+          }else if(tracker.status==2){
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Approval Rejected"),
+            ));
+          }else{
+            if (user.password == strPassword) {
+              user.documentId = value.docs[0].id;
+              Get.delete<UserRoles>();
+              Get.put<UserRoles>(UserRoles.User);
+              User sendbirdUser = await sendBird.connect(user.emailId);
+              Get.delete<User>();
+              Get.put<User>(sendbirdUser);
+              Get.toNamed(GetPageRouter.userListRoute,arguments: user);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Password wrong"),
+              ));
+            }
+          }
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Mail ID not found"),
+          ));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Mail ID not found"),
@@ -302,7 +307,7 @@ class _LoginPageState extends State<LoginPage> with BorderDesign, Dimension {
     var data = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).where("emailId", isEqualTo: strEmail).limit(1).get();
     data.then((value) {
       if (value.docs.isNotEmpty) {
-        User user = User.fromMap(value.docs[0].data());
+        u.User user = u.User.fromMap(value.docs[0].data());
         Get.back();
         Logger().i(user.toMap());
         Get.toNamed(GetPageRouter.forgotPswdPageRoute, arguments: value.docs[0].id);

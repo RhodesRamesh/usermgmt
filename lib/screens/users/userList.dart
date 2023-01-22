@@ -7,7 +7,6 @@ import 'package:user_management/routers/router.dart';
 import 'package:user_management/screens/fireStore/dots.dart';
 import 'package:user_management/screens/fireStore/entity/User.dart';
 import 'package:user_management/screens/fireStore/entity/orgTypes.dart';
-import 'package:user_management/screens/fireStore/sendMail.dart';
 
 class UserList extends StatefulWidget {
   const UserList({Key? key}) : super(key: key);
@@ -32,7 +31,7 @@ class _UserListState extends State<UserList>{
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
                 onTap: () {
-                  Get.toNamed(GetPageRouter.userProfilePageRoute, arguments: [user, true])!.then((value) {
+                  Get.toNamed(GetPageRouter.chatPageRoute, arguments: [user, true])!.then((value) {
                     setState(() {
                       _future = FirebaseFirestore.instance.collection(FireStoreDots.userCollection).get();
                     });
@@ -107,7 +106,7 @@ class _UserListState extends State<UserList>{
     return ListView.builder(
       itemCount: users.length,
       itemBuilder: (BuildContext context, int index) {
-        return InkWell(onTap: () => Get.toNamed(GetPageRouter.userProfilePageRoute, arguments: [users[index], false]),
+        return InkWell(onTap: () => Get.toNamed(GetPageRouter.chatPageRoute, arguments: [users[index], false]),
             child: showSingleUser(users[index]));
       },
     );
